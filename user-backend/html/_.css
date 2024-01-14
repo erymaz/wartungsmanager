@@ -1,0 +1,259 @@
+body {
+  background: #eaeced;
+}
+
+.wrapper {
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #eaeced;
+  display: flex;
+  flex-direction: column;
+}
+.login-card {
+  margin: auto;
+  background: white;
+  padding: 32px;
+  width: 370px;
+  max-width: 90%;
+}
+.login-brand {
+  margin-bottom: 12px;
+}
+.login-brand p {
+  font-size: 14px;
+  text-align: center;
+}
+@media (max-width: 411px) {
+  .login-brand {
+    margin-top: 5vw;
+  }
+}
+.login-form {
+  margin-top: 12px;
+}
+.login-form .login-error div {
+  height: 0;
+  padding: 0;
+  opacity: 0;
+  margin: 0;
+  overflow: hidden;
+  transition: opacity 1s;
+}
+.login-form .login-error .shake {
+  height: auto;
+  opacity: 1;
+  width: 100%;
+  border: solid 1px #aa312c;
+  background: #aa312c4f;
+  color: #aa312c;
+  padding: 8px 14px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.login-form .form-group label {
+  font-weight: bold;
+  font-size: 14px;
+}
+.login-form .form-group .form-control {
+  border: solid 1px black;
+  border-radius: 0;
+}
+.login-form .form-group.shake .form-control {
+  border-color: #aa312c !important;
+  color: #aa312c;
+}
+.login-form button {
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  color: white;
+  height: 38px;
+  margin-top: 20px;
+}
+.login-form__button {
+  background: #aa312c;
+}
+.login-form__button:disabled {
+  background: #9e6e6c;
+}
+
+.login-footer {
+  width: 360px;
+  max-width: 90%;
+  margin: 16px auto;
+  font-size: 12px;
+}
+.login-footer p {
+  text-align: center;
+}
+
+.links-footer a:after {
+  content: '|';
+  color: black;
+  padding-left: 10px;
+  padding-right: 5px;
+  display: inline-block;
+}
+
+.links-footer a:last-child:after {
+  content: '';
+  display: none;
+}
+
+#cookie-banner {
+  display: block;
+  max-height: 0px;
+  transition: all 0.3s ease-out;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  border-bottom: 1px solid #c4c4c4;
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.05);
+}
+
+.cookie-banner-content {
+  padding: 20px 32px;
+  background: white;
+  justify-content: space-between;
+  font-size: 14px;
+  align-items: center;
+  width: 100%;
+  display: flex;
+}
+
+#cookie-banner.show {
+  max-height: 273px;
+}
+
+#cookie-banner .accept-button {
+  background: #aa312c;
+  color: #fff;
+  width: auto;
+  border: none;
+  outline: none;
+  border: none;
+  color: white;
+  height: 38px;
+  display: flex;
+  padding: 0 50px;
+  align-items: center;
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+.cookie-banner-confirm {
+  display: flex;
+  align-items: center;
+}
+
+.cookie-banner-confirm label {
+  margin-bottom: 0px;
+}
+
+.cookie-confirm {
+  margin-bottom: 0;
+  margin-left: 10px;
+}
+
+.cookie-banner-confirm {
+  position: relative;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.cookie-banner-confirm input[type='checkbox'] {
+  box-sizing: border-box;
+  padding: 0;
+  display: none;
+}
+
+p.cookie-message {
+  margin-bottom: 10px;
+}
+
+.checkbox-label {
+  font-weight: 400;
+  cursor: pointer;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin: 0;
+  cursor: initial;
+}
+
+.checkbox-text {
+  -webkit-box-ordinal-group: 2;
+  -ms-flex-order: 1;
+  order: 1;
+  margin-left: 30px;
+  margin-right: 0;
+}
+
+.checkbox-tick {
+  position: absolute;
+  left: 0px;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 2px;
+  background-color: #ebebeb;
+  border-color: #c4c4c4;
+  z-index: 1;
+}
+
+.checkbox-tick::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: 3px;
+  height: 11px;
+  width: 6px;
+  border-top: 2px solid transparent;
+  border-right: 2px solid transparent;
+  -webkit-transform: scaleX(-1) rotate(140deg);
+  -ms-transform: scaleX(-1) rotate(140deg);
+  transform: scaleX(-1) rotate(140deg);
+  -webkit-transform-origin: left top;
+  -ms-transform-origin: left top;
+  transform-origin: left top;
+  border-top-color: #fff;
+  border-right-color: #fff;
+  background-color: #ebebeb;
+  border-color: #c4c4c4;
+}
+
+.checkbox-label::after {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  border: 2px solid #000;
+  border-width: 1px;
+  background-color: #ebebeb;
+  border-color: #c4c4c4;
+  content: '';
+  margin-left: -1px;
+  position: absolute;
+}
+
+@media (max-width: 710px) {
+  .cookie-banner-content {
+    flex-wrap: wrap;
+  }
+  #cookie-banner .accept-button {
+    margin-left: 0;
+    margin-top: 16px;
+  }
+}

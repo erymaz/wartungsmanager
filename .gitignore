@@ -1,0 +1,10 @@
+**/node_modules
+.vscode/
+.history/
+.env
+.npmrc
+.DS_Store
+Thumbs.db
+node_modules
+/.idea
+/.idea/*

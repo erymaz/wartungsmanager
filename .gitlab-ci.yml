@@ -1,0 +1,671 @@
+stages:
+  - test
+  - build
+  - push
+  - k8s
+
+# =======================================================================================
+# Test stage
+# =======================================================================================
+
+# Template ------------------------------------------------------------------------------
+
+.test-frontend:
+  stage: test
+  image: node:12
+  script:
+    - npm i --unsafe
+    - cd ${SERVICE_NAME}/
+    - npm i --unsafe
+    - npm run test:once
+    - "echo Overall code coverage: $(cat ./coverage/coverage-summary.json | jq '.total | map(.pct) | add/length') %"
+  coverage: '/Overall code coverage: ([\d.]+) %/'
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    reports:
+      junit: "${SERVICE_NAME}/test-reports/*.xml"
+    paths:
+      - "${SERVICE_NAME}/coverage/"
+      - "${SERVICE_NAME}/test-reports/"
+
+.test-backend:
+  stage: test
+  image: node:12
+  services:
+    - name: mysql:8.0
+      alias: db-testing
+      command:
+        - "--character-set-server=utf8mb4"
+        - "--collation-server=utf8mb4_unicode_ci"
+        - "--default-authentication-plugin=mysql_native_password"
+      environment:
+        MYSQL_DATABASE: app-testing
+        MYSQL_USER: app
+        MYSQL_PASSWORD: app
+        MYSQL_ROOT_PASSWORD: root
+  script:
+    - npm i --unsafe
+    - cd ${SERVICE_NAME}/
+    - npm i --unsafe
+    - "../_fixtures/wait-for-it/wait-for-it.sh -h db-testing -p 3306 -s -t 60 -- npm run test:once"
+    - "echo Overall code coverage: $(jq '.total | map_values(.pct) | add / (. | length)' coverage/coverage-summary.json) %"
+  coverage: '/Overall code coverage: ([\d.]+) %/'
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    reports:
+      junit: "${SERVICE_NAME}/reports/unit/junit/junit.xml"
+    paths:
+      - "${SERVICE_NAME}/coverage/"
+      - "${SERVICE_NAME}/reports/"
+
+# Microservices -------------------------------------------------------------------------
+
+# test asset-backend:
+#   extends:
+#     - .test-backend
+#   variables:
+#     SERVICE_NAME: asset-backend
+
+# test file-backend:
+#   extends:
+#     - .test-backend
+#   variables:
+#     SERVICE_NAME: file-backend
+
+# test maintenance-backend:
+#   extends:
+#     - .test-backend
+#   variables:
+#     SERVICE_NAME: maintenance-backend
+
+# test user-backend:
+#   extends:
+#     - .test-backend
+#   variables:
+#     SERVICE_NAME: user-backend
+
+# test hub-backend:
+#   extends:
+#     - .test-backend
+#   variables:
+#     SERVICE_NAME: hub-backend
+
+# test asset-frontend:
+#   extends:
+#     - .test-frontend
+#   variables:
+#     SERVICE_NAME: asset-frontend
+
+# test maintenance-frontend:
+#   extends:
+#     - .test-frontend
+#   variables:
+#     SERVICE_NAME: maintenance-frontend
+
+# test hub-frontend:
+#   extends:
+#     - .test-frontend
+#   variables:
+#     SERVICE_NAME: hub-frontend
+
+# =======================================================================================
+# Build stage
+# =======================================================================================
+
+# Template ------------------------------------------------------------------------------
+
+.build:
+  stage: build
+  image: docker:stable
+  script:
+    - apk add jq
+    - docker build -f ${SERVICE_NAME}/Dockerfile -t ${IMAGE_NAME}:${CI_COMMIT_SHA} --build-arg BUILD_ENVIRONMENT=${BUILD_ENVIRONMENT} .
+    - docker save ${IMAGE_NAME}:${CI_COMMIT_SHA} > ${ARTIFACTS_BASE_PATH:-./}image.tar
+  artifacts:
+    expire_in: 1 hrs
+    paths:
+      - ${ARTIFACTS_BASE_PATH:-./}image.tar
+
+.build dev:
+  extends: .build
+  except:
+    refs:
+      - staging
+      - release
+      - /^v[0-9]+\.[0-9]+\.[0-9]+.*$/
+  variables:
+    BUILD_ENVIRONMENT: develop
+
+.build staging:
+  extends: .build
+  only:
+    refs:
+      - staging
+  variables:
+    BUILD_ENVIRONMENT: staging
+
+.build release:
+  extends: .build
+  only:
+    - release
+    - /^v[0-9]+\.[0-9]+\.[0-9]+.*$/
+  variables:
+    BUILD_ENVIRONMENT: production
+
+# Microservices -------------------------------------------------------------------------
+
+.build asset-backend:
+  variables:
+    SERVICE_NAME: asset-backend
+    IMAGE_NAME: asset-backend
+build asset-backend dev:
+  extends:
+    - .build dev
+    - .build asset-backend
+build asset-backend staging:
+  extends:
+    - .build staging
+    - .build asset-backend
+build asset-backend release:
+  extends:
+    - .build release
+    - .build asset-backend
+
+.build file-backend:
+  variables:
+    SERVICE_NAME: file-backend
+    IMAGE_NAME: file-backend
+build file-backend dev:
+  extends:
+    - .build dev
+    - .build file-backend
+build file-backend staging:
+  extends:
+    - .build staging
+    - .build file-backend
+build file-backend release:
+  extends:
+    - .build release
+    - .build file-backend
+
+.build maintenance-backend:
+  variables:
+    SERVICE_NAME: maintenance-backend
+    IMAGE_NAME: maintenance-backend
+build maintenance-backend dev:
+  extends:
+    - .build dev
+    - .build maintenance-backend
+build maintenance-backend staging:
+  extends:
+    - .build staging
+    - .build maintenance-backend
+build maintenance-backend release:
+  extends:
+    - .build release
+    - .build maintenance-backend
+
+.build user-backend:
+  variables:
+    SERVICE_NAME: user-backend
+    IMAGE_NAME: user-backend
+build user-backend dev:
+  extends:
+    - .build dev
+    - .build user-backend
+build user-backend staging:
+  extends:
+    - .build staging
+    - .build user-backend
+build user-backend release:
+  extends:
+    - .build release
+    - .build user-backend
+
+.build hub-backend:
+  variables:
+    SERVICE_NAME: hub-backend
+    IMAGE_NAME: hub-backend
+build hub-backend dev:
+  extends:
+    - .build dev
+    - .build hub-backend
+build hub-backend staging:
+  extends:
+    - .build staging
+    - .build hub-backend
+build hub-backend release:
+  extends:
+    - .build release
+    - .build hub-backend
+
+.build asset-frontend:
+  variables:
+    SERVICE_NAME: asset-frontend
+    IMAGE_NAME: asset-frontend
+build asset-frontend dev:
+  extends:
+    - .build dev
+    - .build asset-frontend
+build asset-frontend staging:
+  extends:
+    - .build staging
+    - .build asset-frontend
+build asset-frontend release:
+  extends:
+    - .build release
+    - .build asset-frontend
+
+.build maintenance-frontend:
+  variables:
+    SERVICE_NAME: maintenance-frontend
+    IMAGE_NAME: maintenance-frontend
+build maintenance-frontend dev:
+  extends:
+    - .build dev
+    - .build maintenance-frontend
+build maintenance-frontend staging:
+  extends:
+    - .build staging
+    - .build maintenance-frontend
+build maintenance-frontend release:
+  extends:
+    - .build release
+    - .build maintenance-frontend
+
+.build hub-frontend:
+  variables:
+    SERVICE_NAME: hub-frontend
+    IMAGE_NAME: hub-frontend
+build hub-frontend dev:
+  extends:
+    - .build dev
+    - .build hub-frontend
+build hub-frontend staging:
+  extends:
+    - .build staging
+    - .build hub-frontend
+build hub-frontend release:
+  extends:
+    - .build release
+    - .build hub-frontend
+
+# =======================================================================================
+# Push stage
+# =======================================================================================
+
+# Template ------------------------------------------------------------------------------
+
+.push:
+  stage: push
+  image: docker:stable
+  script:
+    - apk add jq
+    - 'echo "Current branch: ${CI_COMMIT_BRANCH}, target: ${TARGET}"'
+    - docker load < ${ARTIFACTS_BASE_PATH:-./}image.tar
+    - docker login ${DOCKER_REG_URL} --username "${DOCKER_REG_USR}" --password "${DOCKER_REG_PWD}"
+    - docker tag ${IMAGE_NAME}:${CI_COMMIT_SHA} ${DOCKER_REG_URL}/${IMAGE_NAME}:${IMAGE_VERSION}
+    - docker push ${DOCKER_REG_URL}/${IMAGE_NAME}:${IMAGE_VERSION}
+
+.push dev:
+  extends: .push
+  only:
+    refs:
+      - master
+  variables:
+    TARGET: DEV
+    IMAGE_VERSION: latest
+    DOCKER_REG_URL: "${DOCKER_REG_URL_DEV}"
+    DOCKER_REG_USR: "${DOCKER_REG_USR_DEV}"
+    DOCKER_REG_PWD: "${DOCKER_REG_PWD_DEV}"
+
+.push staging:
+  extends: .push
+  only:
+    refs:
+      - staging
+  variables:
+    TARGET: STAGING
+    IMAGE_VERSION: staging
+    DOCKER_REG_URL: "${DOCKER_REG_URL_DEV}"
+    DOCKER_REG_USR: "${DOCKER_REG_USR_DEV}"
+    DOCKER_REG_PWD: "${DOCKER_REG_PWD_DEV}"
+
+.push release:
+  extends: .push
+  only:
+    - /^v[0-9]+\.[0-9]+\.[0-9]+.*$/
+  variables:
+    TARGET: RELEASE
+    IMAGE_VERSION: "${CI_COMMIT_TAG}"
+    DOCKER_REG_URL: "${DOCKER_REG_URL_RELEASE}"
+    DOCKER_REG_USR: "${DOCKER_REG_USR_RELEASE}"
+    DOCKER_REG_PWD: "${DOCKER_REG_PWD_RELEASE}"
+
+# Microservices -------------------------------------------------------------------------
+
+.push asset-backend:
+  variables:
+    IMAGE_NAME: asset-backend
+push asset-backend dev:
+  extends:
+    - .push dev
+    - .push asset-backend
+  needs:
+    - job: build asset-backend dev
+      artifacts: true
+push asset-backend staging:
+  extends:
+    - .push staging
+    - .push asset-backend
+  needs:
+    - job: build asset-backend staging
+      artifacts: true
+push asset-backend release:
+  extends:
+    - .push release
+    - .push asset-backend
+  needs:
+    - job: build asset-backend release
+      artifacts: true
+
+.push file-backend:
+  variables:
+    IMAGE_NAME: file-backend
+push file-backend dev:
+  extends:
+    - .push dev
+    - .push file-backend
+  needs:
+    - job: build file-backend dev
+      artifacts: true
+push file-backend staging:
+  extends:
+    - .push staging
+    - .push file-backend
+  needs:
+    - job: build file-backend staging
+      artifacts: true
+push file-backend release:
+  extends:
+    - .push release
+    - .push file-backend
+  needs:
+    - job: build file-backend release
+      artifacts: true
+
+.push maintenance-backend:
+  variables:
+    IMAGE_NAME: maintenance-backend
+push maintenance-backend dev:
+  extends:
+    - .push dev
+    - .push maintenance-backend
+  needs:
+    - job: build maintenance-backend dev
+      artifacts: true
+push maintenance-backend staging:
+  extends:
+    - .push staging
+    - .push maintenance-backend
+  needs:
+    - job: build maintenance-backend staging
+      artifacts: true
+push maintenance-backend release:
+  extends:
+    - .push release
+    - .push maintenance-backend
+  needs:
+    - job: build maintenance-backend release
+      artifacts: true
+
+.push user-backend:
+  variables:
+    IMAGE_NAME: user-backend
+push user-backend dev:
+  extends:
+    - .push dev
+    - .push user-backend
+  needs:
+    - job: build user-backend dev
+      artifacts: true
+push user-backend staging:
+  extends:
+    - .push staging
+    - .push user-backend
+  needs:
+    - job: build user-backend staging
+      artifacts: true
+push user-backend release:
+  extends:
+    - .push release
+    - .push user-backend
+  needs:
+    - job: build user-backend release
+      artifacts: true
+
+.push hub-backend:
+  variables:
+    IMAGE_NAME: hub-backend
+push hub-backend dev:
+  extends:
+    - .push dev
+    - .push hub-backend
+  needs:
+    - job: build hub-backend dev
+      artifacts: true
+push hub-backend staging:
+  extends:
+    - .push staging
+    - .push hub-backend
+  needs:
+    - job: build hub-backend staging
+      artifacts: true
+push hub-backend release:
+  extends:
+    - .push release
+    - .push hub-backend
+  needs:
+    - job: build hub-backend release
+      artifacts: true
+
+.push asset-frontend:
+  variables:
+    IMAGE_NAME: asset-frontend
+push asset-frontend dev:
+  extends:
+    - .push dev
+    - .push asset-frontend
+  needs:
+    - job: build asset-frontend dev
+      artifacts: true
+push asset-frontend staging:
+  extends:
+    - .push staging
+    - .push asset-frontend
+  needs:
+    - job: build asset-frontend staging
+      artifacts: true
+push asset-frontend release:
+  extends:
+    - .push release
+    - .push asset-frontend
+  needs:
+    - job: build asset-frontend release
+      artifacts: true
+
+.push maintenance-frontend:
+  variables:
+    IMAGE_NAME: maintenance-frontend
+push maintenance-frontend dev:
+  extends:
+    - .push dev
+    - .push maintenance-frontend
+  needs:
+    - job: build maintenance-frontend dev
+      artifacts: true
+push maintenance-frontend staging:
+  extends:
+    - .push staging
+    - .push maintenance-frontend
+  needs:
+    - job: build maintenance-frontend staging
+      artifacts: true
+push maintenance-frontend release:
+  extends:
+    - .push release
+    - .push maintenance-frontend
+  needs:
+    - job: build maintenance-frontend release
+      artifacts: true
+
+.push hub-frontend:
+  variables:
+    IMAGE_NAME: hub-frontend
+push hub-frontend dev:
+  extends:
+    - .push dev
+    - .push hub-frontend
+  needs:
+    - job: build hub-frontend dev
+      artifacts: true
+push hub-frontend staging:
+  extends:
+    - .push staging
+    - .push hub-frontend
+  needs:
+    - job: build hub-frontend staging
+      artifacts: true
+push hub-frontend release:
+  extends:
+    - .push release
+    - .push hub-frontend
+  needs:
+    - job: build hub-frontend release
+      artifacts: true
+
+# =======================================================================================
+# Apply new images to kubernetes
+# =======================================================================================
+
+# Template ------------------------------------------------------------------------------
+
+.k8s:
+  stage: k8s
+  image: mcr.microsoft.com/azure-cli
+  script:
+    - 'echo "Current branch: ${CI_COMMIT_BRANCH}, target: ${TARGET}"'
+    # Convert space-separated deployment names to bash array
+    - "K8S_DEPLOYMENTS=($K8S_DEPLOYMENTS)"
+    - 'echo "Restarting deployments -- ${K8S_DEPLOYMENTS[@]} -- on: ${AZ_AKS_NAME} in namespace ${K8S_NAMESPACE}"'
+    - "az aks install-cli"
+    - "az login --service-principal --username ${AZ_SP_USERNAME} --password ${AZ_SP_PASSWORD} --tenant ${AZ_SP_TENANT}"
+    - "az aks get-credentials -n ${AZ_AKS_NAME} -g ${AZ_AKS_RG}"
+    - >-
+      for DEPLOYMENT in ${K8S_DEPLOYMENTS[@]}; do
+        echo "Restarting deployment: ${DEPLOYMENT}";
+        for NAMESPACE in $(kubectl get deployments -A | tail +2 | grep "${DEPLOYMENT}" | cut -d " " -f 1 | xargs -I {} echo "{}"); do
+          echo "  in namespace: ${NAMESPACE}";
+          kubectl -n ${NAMESPACE} rollout restart deployment/${DEPLOYMENT};
+        done
+      done
+  variables:
+    K8S_DEPLOYMENTS: >-
+      asset-backend
+      file-backend
+      maintenance-backend
+      user-backend
+      hub-backend
+      maintenance-frontend
+      asset-frontend
+      hub-frontend
+
+.k8s dev:
+  extends: .k8s
+  only:
+    refs:
+      - master
+  variables:
+    TARGET: DEV
+    AZ_SP_USERNAME: "${AZ_SP_USERNAME_DEV}"
+    AZ_SP_PASSWORD: "${AZ_SP_PASSWORD_DEV}"
+    AZ_SP_TENANT: "${AZ_SP_TENANT_DEV}"
+    AZ_AKS_NAME: "${AZ_AKS_NAME_DEV}"
+    AZ_AKS_RG: "${AZ_AKS_RG_DEV}"
+
+.k8s staging:
+  extends: .k8s
+  only:
+    refs:
+      - staging
+  variables:
+    TARGET: STAGING
+    AZ_SP_USERNAME: "${AZ_SP_USERNAME_STAGING}"
+    AZ_SP_PASSWORD: "${AZ_SP_PASSWORD_STAGING}"
+    AZ_SP_TENANT: "${AZ_SP_TENANT_STAGING}"
+    AZ_AKS_NAME: "${AZ_AKS_NAME_STAGING}"
+    AZ_AKS_RG: "${AZ_AKS_RG_STAGING}"
+
+.k8s release:
+  extends: .k8s
+  only:
+    - /^v[0-9]+\.[0-9]+\.[0-9]+.*$/
+  variables:
+    TARGET: RELEASE
+    AZ_SP_USERNAME: "${AZ_SP_USERNAME_RELEASE}"
+    AZ_SP_PASSWORD: "${AZ_SP_PASSWORD_RELEASE}"
+    AZ_SP_TENANT: "${AZ_SP_TENANT_RELEASE}"
+    AZ_AKS_NAME: "${AZ_AKS_NAME_RELEASE}"
+    AZ_AKS_RG: "${AZ_AKS_RG_RELEASE}"
+
+# Implementations -----------------------------------------------------------------------
+
+k8s dev:
+  extends: .k8s dev
+  needs:
+    - job: push asset-backend dev
+      artifacts: false
+    - job: push file-backend dev
+      artifacts: false
+    - job: push maintenance-backend dev
+      artifacts: false
+    - job: push user-backend dev
+      artifacts: false
+    - job: push hub-backend dev
+      artifacts: false
+    - job: push asset-frontend dev
+      artifacts: false
+    - job: push maintenance-frontend dev
+      artifacts: false
+    - job: push hub-frontend dev
+      artifacts: false
+
+# k8s staging:
+#   extends: .k8s staging
+#   needs:
+#     - job: push asset-backend staging
+#       artifacts: false
+#     - job: push file-backend staging
+#       artifacts: false
+#     - job: push maintenance-backend staging
+#       artifacts: false
+#     - job: push user-backend staging
+#       artifacts: false
+#     - job: push hub-backend staging
+#       artifacts: false
+#     - job: push asset-frontend staging
+#       artifacts: false
+#     - job: push maintenance-frontend staging
+#       artifacts: false
+#     - job: push hub-frontend staging
+#       artifacts: false
+# Comment in if production releases are done automatically
+# k8s release:
+#   extends: .k8s release
+#   needs:
+#     - job: push asset-backend release
+#       artifacts: false
+#     - job: push file-backend release
+#       artifacts: false
+#     - job: push frontend release
+#       artifacts: false

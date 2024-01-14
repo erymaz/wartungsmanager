@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "@elunic/ecs-tslint/tslint-angular9.fix.json",
+    "./tslint.json"
+  ],
+  "rules": {}
+}

@@ -1,0 +1,52 @@
+<app-table
+  class="w-100"
+  [data]="assetTypes"
+  [searchCols]="['equipmentType']"
+  [searchMultilangCols]="['name']"
+  [searchTerm]="searchTerm"
+  [scrollable]="true"
+>
+  <app-row *appHeaderRowDef>
+    <app-header-cell appHeaderSort="name" [isMultilang]="true">
+      {{ 'VIEWS.ASSET_TYPES.NAME' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="equipmentType">
+      {{ 'VIEWS.ASSET_TYPES.ISA95_TYPE' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="extendsType.name" [isMultilang]="true">
+      {{ 'VIEWS.ASSET_TYPES.PARENT_ASSET_TYPE' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="updatedAt">
+      {{ 'VIEWS.ASSET_TYPES.LAST_CHANGED' | translate }}
+    </app-header-cell>
+    <app-header-cell></app-header-cell>
+  </app-row>
+
+  <app-row appDataRow *appDataRowDef="let assetType">
+    <app-cell [multilang]="assetType.name"></app-cell>
+    <app-cell>{{ assetType.equipmentType }}</app-cell>
+    <app-cell [multilang]="assetType.extendsType?.name || '-'"></app-cell>
+    <app-cell>{{ assetType.updatedAt | date: 'dd.MM.yyyy | HH:mm' }}</app-cell>
+    <app-cell class="p-0 overflow-visible">
+      <div ngbDropdown placement="bottom-right top-right" class="btn-group">
+        <button ngbDropdownToggle class="btn btn-transparent btn-icon">
+          <i class="material-icons mi-26">more_vert</i>
+        </button>
+
+        <div ngbDropdownMenu class="text-right">
+          <button ngbDropdownItem routerLink="/asset-types/{{assetType.id}}">
+            {{ 'VIEWS.ASSET_TYPES.EDIT' | translate }}
+          </button>
+
+          <button ngbDropdownItem class="text-danger" (click)="onDelete(assetType.id)">
+            {{ 'VIEWS.ASSET_TYPES.DELETE' | translate }}
+          </button>
+        </div>
+      </div>
+    </app-cell>
+  </app-row>
+
+  <app-row appEmptyRow *appEmptyRowDef>
+    <span>{{ 'VIEWS.ASSET_TYPES.NO_ASSET_TYPES_FOUND' | translate }}</span>
+  </app-row>
+</app-table>

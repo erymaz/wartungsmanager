@@ -1,0 +1,22 @@
+@import 'variables';
+
+:host {
+  width: 100%;
+  padding: 2rem;
+  background-color: $light;
+
+  &::ng-deep {
+    .asset-table {
+      .table-row {
+        .table-cell,
+        .table-header-cell {
+          &:nth-child(3),
+          &:nth-child(5),
+          &:nth-child(7) {
+            flex: 0 1 10%;
+          }
+        }
+      }
+    }
+  }
+}

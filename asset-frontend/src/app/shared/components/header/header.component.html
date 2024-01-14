@@ -1,0 +1,52 @@
+<header>
+  <div class="wrapper-dropdown" ngbDropdown>
+    <img src="assets/images/burger.svg" id="menu" ngbDropdownToggle />
+    <div aria-labelledby="menu" ngbDropdownMenu class="border-0 shadow-sm mt-2">
+      <a
+        [href]="item.appUrl"
+        ngbDropdownItem
+        *ngFor="let item of tileConfigurations"
+        class="d-flex align-items-center dropdown-item font-weight-bold p-2"
+      >
+        <div class="image-wrapper mr-3">
+          <img [src]="item.iconUrl | iconUrl" class="small-icon" />
+        </div>
+        {{ item.tileName || 'Empty name' }}
+      </a>
+    </div>
+  </div>
+
+  <div class="header-left">
+    <div class="brand-text">
+      DIGITAL <b>SUITE</b>
+    </div>
+    <div class="brand">
+      <h1>Asset Management</h1>
+    </div>
+  </div>
+
+  <div class="ml-auto">
+    <div ngbDropdown placement="bottom-right" class="btn-group mr-3">
+      <button ngbDropdownToggle class="btn btn-transparent btn-icon">
+        <i class="material-icons mi-26">settings</i>
+      </button>
+      <div ngbDropdownMenu class="text-right">
+        <button ngbDropdownItem>Hub settings</button>
+        <button ngbDropdownItem>User management</button>
+        <button ngbDropdownItem>Asset management</button>
+        <button ngbDropdownItem>Tenant management</button>
+      </div>
+    </div>
+
+    <div class="btn-group" ngbDropdown placement="bottom-right">
+      <button ngbDropdownToggle class="btn btn-sm btn-transparent btn-icon">
+        <img src="assets/images/avatar.png" alt="Avatar" class="w-100" />
+      </button>
+
+      <div ngbDropdownMenu class="text-right">
+        <button ngbDropdownItem>Profile</button>
+        <button ngbDropdownItem>Logout</button>
+      </div>
+    </div>
+  </div>
+</header>

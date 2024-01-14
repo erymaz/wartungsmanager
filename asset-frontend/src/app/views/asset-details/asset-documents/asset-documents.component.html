@@ -1,0 +1,57 @@
+<app-panel>
+  <app-panel-header>
+    <i class="material-icons mr-3">folder_open</i>
+    <h4>{{ 'VIEWS.ASSET_DETAILS.DOCUMENTS' | translate }}</h4>
+
+    <app-panel-header-actions>
+      <button class="btn btn-outline-primary" (click)="onAdd()">
+        {{ 'VIEWS.ASSET_DETAILS.ADD_DOCUMENT' | translate }}
+      </button>
+    </app-panel-header-actions>
+  </app-panel-header>
+
+  <app-panel-body class="p-0">
+    <app-table class="w-100" [data]="documents" [scrollable]="true">
+      <app-row *appHeaderRowDef>
+        <app-header-cell appHeaderSort="alias">
+          {{ 'VIEWS.ASSET_DETAILS.DOCUMENT_ID' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="createdAt">
+          {{ 'VIEWS.ASSET_DETAILS.TYPE' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="createdBy">
+          {{ 'VIEWS.ASSET_DETAILS.CREATED_BY' | translate }}
+        </app-header-cell>
+        <app-header-cell></app-header-cell>
+      </app-row>
+
+      <app-row appDataRow *appDataRowDef="let document">
+        <app-cell>{{ document.documentId }}</app-cell>
+        <app-cell><a [href]="documentIdToUrl(document.documentId)" target="_blank">{{ document.documentType }}</a>
+        </app-cell>
+        <app-cell><a role="button">{{ document.createdBy | username | async }}</a></app-cell>
+        <app-cell class="p-0 overflow-visible">
+          <div ngbDropdown placement="bottom-right" class="btn-group">
+            <button ngbDropdownToggle class="btn btn-transparent btn-icon">
+              <i class="material-icons mi-26">more_vert</i>
+            </button>
+
+            <div ngbDropdownMenu class="text-right">
+              <button ngbDropdownItem (click)="onEdit(document)">
+                {{ 'VIEWS.ASSET_DETAILS.EDIT' | translate }}
+              </button>
+
+              <button ngbDropdownItem class="text-danger" (click)="onRemove(document.id)">
+                {{ 'VIEWS.ASSET_DETAILS.REMOVE' | translate }}
+              </button>
+            </div>
+          </div>
+        </app-cell>
+      </app-row>
+
+      <app-row appEmptyRow *appEmptyRowDef>
+        <span>No documents found</span>
+      </app-row>
+    </app-table>
+  </app-panel-body>
+</app-panel>

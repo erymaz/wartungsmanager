@@ -1,0 +1,37 @@
+{
+  "HOME": {
+    "WELCOME": "Welcome"
+  },
+  "SETTINGS": {
+    "SETTINGS": "Settings",
+    "PRIMARY_COLOR": "Primary color",
+    "BACKGROUND_COLOR": "Background color",
+    "LIGHT_WELCOME_TEXT": "Light welcome text?",
+    "BACKGROUND_IMAGE": "Background image",
+    "GENERAL_SETTING": "General settings",
+    "TILE_CONFIGURATION": "Tile configuration",
+    "TILE_NAME": "Tile name",
+    "DESCRIPTION": "Description",
+    "APP_URL": "App url",
+    "ICON_URL": "Icon url",
+    "TILE_COLOR": "Tile color",
+    "TILE_TEXT_COLOR": "Tile text color",
+    "ADD_TILE": "Add tile"
+  },
+  "OPTIONS": {
+    "SETTINGS": {
+      "HUB_SETTINGS": "Hub settings",
+      "USER_MANAGEMENT": "User management",
+      "ASSET_MANAGEMENT": "Asset management",
+      "TENANT_MANAGEMENT": "Tenant management"
+    },
+    "PROFIL": {
+      "PROFIL": "Profil",
+      "LOGOUT": "Logout"
+    }
+  },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "SAVE_CHANGES": "Save changes"
+  }
+}

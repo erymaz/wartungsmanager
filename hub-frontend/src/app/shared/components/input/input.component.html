@@ -1,0 +1,41 @@
+<div class="input-component">
+  <div class="label"><ng-content></ng-content></div>
+
+  <div class="input-wrapper">
+    <div
+      class="color-circle"
+      *ngIf="configs.mode === 'color'"
+      [ngStyle]="{ 'background-color': color }"
+    ></div>
+    <input
+      *ngIf="configs.mode !== 'color'"
+      [type]="configs.type === 'file' ? 'text' : configs.type"
+      class="inside-input"
+      [formControl]="input"
+      (blur)="blurInput.emit(input.value)"
+      (click)="configs.type === 'file' && inputFile.click()"
+    />
+    <input
+      *ngIf="configs.mode === 'color'"
+      [(colorPicker)]="color"
+      class="inside-input"
+      [value]="color"
+      (colorPickerChange)="changeInput.emit($event)"
+      (colorPickerSelect)="blurInput.emit(color)"
+    />
+    <input
+      #inputFile
+      (change)="handleFileInput($event.target.files)"
+      type="file"
+      class="hidden-input"
+      multiple
+      accept="image/png,image/jpeg,image/jpg"
+    />
+    <div class="clear-button" (click)="clearInput()" *ngIf="configs.autoClear">
+      <img src="assets/images/delete-input.svg" />
+    </div>
+  </div>
+  <div class="error-message" *ngIf="!input.valid">
+    The field has to be field with valid {{ configs.validateAs }}
+  </div>
+</div>

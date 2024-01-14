@@ -1,0 +1,17 @@
+{
+  "src/**/!(*.spec|test).ts": [
+    "tslint --fix -p tsconfig.app.json -c tslint.fix.json",
+    "prettier --write"
+  ],
+  "src/{test.ts,**/*.spec.ts}": [
+    "tslint --fix -p tsconfig.spec.json -c tslint.fix.json",
+    "prettier --write"
+  ],
+  "e2e/**/*.ts": [
+    "tslint --fix -p e2e/tsconfig.json -c tslint.fix.json",
+    "prettier --write"
+  ],
+  "{e2e/src,src}/**/*.{js,html,css,scss,sass,less}": [
+    "prettier --write"
+  ]
+}

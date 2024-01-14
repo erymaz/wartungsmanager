@@ -1,0 +1,8 @@
+<div
+  class="page"
+  [ngStyle]="{ 'background-image': bgImage ? 'url(' + (bgImage | iconUrl: 'noStubImg') + ')' : 'linear-gradient(125deg, #212932 0%, #23496e 33%, #081e35 66%, #213244 100%)' }"
+>
+  <div class="page-wrapper">
+    <ng-content></ng-content>
+  </div>
+</div>

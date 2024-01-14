@@ -1,0 +1,37 @@
+{
+  "HOME": {
+    "WELCOME": "Willkommen"
+  },
+  "SETTINGS": {
+    "SETTINGS": "Einstellungen",
+    "PRIMARY_COLOR": "Primärfarbe",
+    "BACKGROUND_COLOR": "Hintergrundfarbe",
+    "LIGHT_WELCOME_TEXT": "Heller Willkommenstext?",
+    "BACKGROUND_IMAGE": "Hintergrund Bild",
+    "GENERAL_SETTING": "Generelle Einstellungen",
+    "TILE_CONFIGURATION": "Kachel Konfiguration",
+    "TILE_NAME": "Kachelname",
+    "DESCRIPTION": "Beschreibung",
+    "APP_URL": "App Url",
+    "ICON_URL": "Icon Url",
+    "TILE_COLOR": "Kachelfarbe",
+    "TILE_TEXT_COLOR": "Kacheltextfarbe",
+    "ADD_TILE": "Kachel hinzufügen"
+  },
+  "OPTIONS": {
+    "SETTINGS": {
+      "HUB_SETTINGS": "Hub Einstellungen",
+      "USER_MANAGEMENT": "Benutzer Management",
+      "ASSET_MANAGEMENT": "Asset Management",
+      "TENANT_MANAGEMENT": "Tenant Management"
+    },
+    "PROFIL": {
+      "PROFIL": "Profil",
+      "LOGOUT": "Logout"
+    }
+  },
+  "COMMON": {
+    "CANCEL": "Abbrechen",
+    "SAVE_CHANGES": "Speichern"
+  }
+}

@@ -1,0 +1,106 @@
+<app-tree-table
+  #table
+  class="asset-table"
+  [data]="assets"
+  [searchCols]="['id']"
+  [searchMultilangCols]="['name', 'assetType.name']"
+  [searchTerm]="searchTerm"
+  [getChildren]="getChildren"
+  [getIdentifier]="getIdentifier"
+  [elevated]="true"
+>
+  <app-row *appHeaderRowDef>
+    <app-header-cell *ngFor="let header of headers">
+      {{ header | translate }}
+    </app-header-cell>
+    <app-header-cell></app-header-cell>
+    <app-header-cell></app-header-cell>
+  </app-row>
+
+  <app-row [appTreeDataRow]="node" *appTreeDataRowDef="let node">
+    <app-tree-toggle-cell>
+      <img
+        [src]="
+          node.value.imageId
+            ? imageIdToUrl(node.value.imageId)
+            : './assets/images/asset-thumbnail.jpg'
+        "
+        class="asset-thumbnail"
+        alt="Asset thumbnail"
+      />
+
+      <strong [multilang]="node.value.name"></strong>
+    </app-tree-toggle-cell>
+
+    <app-cell [multilang]="node.value.assetType.name"></app-cell>
+
+    <app-cell>{{ node.value.id }}</app-cell>
+
+    <app-cell>{{ node.value.documents?.length || '-' }}</app-cell>
+
+    <app-cell>{{ node.value.createdAt | date: 'dd.MM.yyyy | HH:mm' }}</app-cell>
+
+    <app-cell>
+      <button
+        class="btn btn-sm btn-transparent btn-icon"
+        [class.invisible]="node.disableReposition || node.meta.isFirst"
+        [disabled]="node.disableReposition || node.meta.isFirst"
+        (click)="swap(node, node.meta.index - 1)"
+      >
+        <i class="material-icons">arrow_upward</i>
+      </button>
+
+      <button
+        class="btn btn-sm btn-transparent btn-icon"
+        [class.invisible]="node.disableReposition || node.meta.isLast"
+        [disabled]="node.disableReposition || node.meta.isLast"
+        (click)="swap(node, node.meta.index + 1)"
+      >
+        <i class="material-icons">arrow_downward</i>
+      </button>
+    </app-cell>
+
+    <app-cell class="overflow-visible">
+      <app-asset-hierarchy-dropdown
+        [node]="node"
+        [assets]="table.data"
+        placeholder="{{ 'VIEWS.ALLOCATED_ASSETS.CHANGE_PARENT_ASSET_TO' | translate }}"
+        (selected)="switchParent(node, $event)"
+      >
+      </app-asset-hierarchy-dropdown>
+    </app-cell>
+
+    <app-cell class="overflow-visible">
+      <div ngbDropdown placement="bottom-right" class="btn-group">
+        <button ngbDropdownToggle class="btn btn-transparent btn-icon">
+          <i class="material-icons mi-26">more_vert</i>
+        </button>
+        <div ngbDropdownMenu class="text-right">
+          <button ngbDropdownItem routerLink="/assets/{{ node.id }}">
+            {{ 'VIEWS.ALLOCATED_ASSETS.EDIT' | translate }}
+          </button>
+          <button ngbDropdownItem (click)="openAssetPoolModal(node)">
+            {{ 'VIEWS.ALLOCATED_ASSETS.ADD_POOL_ASSET' | translate }}
+          </button>
+          <button ngbDropdownItem>
+            {{ 'VIEWS.ALLOCATED_ASSETS.CREATE_NEW_SUB_ASSET' | translate }}
+          </button>
+          <button ngbDropdownItem>
+            {{ 'VIEWS.ALLOCATED_ASSETS.DUPLICATE' | translate }}
+          </button>
+          <button ngbDropdownItem (click)="deallocate(node)">
+            {{ 'VIEWS.ALLOCATED_ASSETS.DEALLOCATE' | translate }}
+          </button>
+          <button ngbDropdownItem class="text-danger" (click)="delete(node)">
+            {{ 'VIEWS.ALLOCATED_ASSETS.DELETE' | translate }}
+          </button>
+        </div>
+      </div>
+    </app-cell>
+  </app-row>
+
+  <app-row appEmptyRow *appEmptyRowDef>
+    <span *ngIf="!loading">No assets found</span>
+    <app-loader *ngIf="loading"></app-loader>
+  </app-row>
+</app-tree-table>

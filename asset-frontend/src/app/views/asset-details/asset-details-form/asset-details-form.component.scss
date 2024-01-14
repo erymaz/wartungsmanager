@@ -1,0 +1,27 @@
+@import 'variables';
+
+app-panel-body {
+  min-height: 30vh;
+}
+
+.image-container {
+  position: relative;
+  height: 100%;
+  box-shadow: 0 3px 6px rgba($black, 16%);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.empty {
+    &::after {
+      content: '';
+      position: absolute;
+      top: -5%;
+      left: 50%;
+      height: 110%;
+      width: 1px;
+      background-color: $gray-300;
+      transform: rotate(45deg);
+    }
+  }
+}

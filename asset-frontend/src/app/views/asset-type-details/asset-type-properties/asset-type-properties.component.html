@@ -1,0 +1,73 @@
+<app-panel>
+  <app-panel-header>
+    <h4>{{ 'VIEWS.ASSET_TYPE_DETAILS.DYNAMIC_PROPERTIES' | translate }}</h4>
+
+    <app-panel-header-actions>
+      <button class="btn btn-outline-primary" (click)="onAdd()" *ngIf="assetTypeId">
+        {{ 'VIEWS.ASSET_TYPE_DETAILS.ADD_NEW_PROPERTY' | translate }}
+      </button>
+    </app-panel-header-actions>
+  </app-panel-header>
+
+  <app-panel-body class="p-0" cdkDropListGroup>
+    <app-table
+      class="w-100"
+      [data]="properties"
+      [scrollable]="true"
+      cdkDropList
+      [cdkDropListData]="properties"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <app-row *appHeaderRowDef>
+        <app-header-cell></app-header-cell>
+        <app-header-cell appHeaderSort="name" [isMultilang]="true">
+          {{ 'VIEWS.ASSET_TYPE_DETAILS.NAME' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="value">
+          {{ 'VIEWS.ASSET_TYPE_DETAILS.VALUE' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="key">
+          {{ 'VIEWS.ASSET_TYPE_DETAILS.KEY' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="isRequired">
+          {{ 'VIEWS.ASSET_TYPE_DETAILS.MANDATORY' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="isHidden">
+          {{ 'VIEWS.ASSET_TYPE_DETAILS.DISPLAY' | translate }}
+        </app-header-cell>
+        <app-header-cell></app-header-cell>
+        <app-header-cell></app-header-cell>
+      </app-row>
+
+      <app-row appDataRow *appDataRowDef="let property" cdkDrag>
+        <app-cell><i class="material-icons mi-18" cdkDragHandle>storage</i></app-cell>
+
+        <app-cell [multilang]="property.name"></app-cell>
+        <app-cell>{{ property.value }}</app-cell>
+        <app-cell>{{ property.key }}</app-cell>
+        <app-cell>
+          <i class="material-icons mi-18" *ngIf="property.isRequired">check</i>
+        </app-cell>
+        <app-cell>
+          <i class="material-icons mi-18" *ngIf="!property.isHidden">check</i>
+        </app-cell>
+
+        <app-cell class="p-0 justify-content-center">
+          <button class="btn btn-sm btn-transparent btn-icon" (click)="onDelete(property.id)">
+            <i class="material-icons mi-18">delete_outline</i>
+          </button>
+        </app-cell>
+
+        <app-cell class="p-0 justify-content-center">
+          <button class="btn btn-sm btn-transparent btn-icon" (click)="onEdit(property)">
+            <i class="material-icons mi-18">mode_edit</i>
+          </button>
+        </app-cell>
+      </app-row>
+
+      <app-row appEmptyRow *appEmptyRowDef>
+        <span>No properties found</span>
+      </app-row>
+    </app-table>
+  </app-panel-body>
+</app-panel>

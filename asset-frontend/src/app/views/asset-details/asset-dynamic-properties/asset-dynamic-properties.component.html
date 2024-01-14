@@ -1,0 +1,40 @@
+<app-panel>
+  <app-panel-header>
+    <h4>{{ 'VIEWS.ASSET_DETAILS.DYNAMIC_PROPERTIES' | translate }}</h4>
+  </app-panel-header>
+
+  <app-panel-body class="p-0">
+    <app-table
+      class="w-100"
+      [data]="properties"
+      [scrollable]="true"
+      cdkDropList
+      (cdkDropListDropped)="changePosition($event)"
+    >
+      <app-row
+        appDataRow
+        *appDataRowDef="let property"
+        cdkDrag
+        cdkDragLockAxis="y"
+        class="px-3"
+        [cdkDragData]="property"
+      >
+        <app-cell class="flex-inherit"><span class="material-icons"> drag_handle </span></app-cell>
+        <app-cell [multilang]="property.name"></app-cell>
+        <app-cell>
+          <input
+            class="form-control"
+            [value]="property.renderedValue || ''"
+            (focus)="setInputPropertyFocus($event, property)"
+            (change)="changeInputProperty($event, property)"
+        /></app-cell>
+      </app-row>
+
+      <app-row appEmptyRow *appEmptyRowDef>
+        <span>No activities found</span>
+      </app-row>
+
+      <app-row appEmptyRow *appEmptyRowDef> </app-row>
+    </app-table>
+  </app-panel-body>
+</app-panel>

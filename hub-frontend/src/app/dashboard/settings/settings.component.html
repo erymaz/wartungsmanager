@@ -1,0 +1,197 @@
+<app-page-layout>
+  <div class="settings">
+    <app-page-card-layout [title]="'SETTINGS.SETTINGS' | translate">
+      <div header class="settings-config">
+        <div class="tabs ml-md-5 ml-2">
+          <button
+            class="tab"
+            (click)="setting = 'general'"
+            [ngClass]="{ selected: setting === 'general' }"
+          >
+            {{ 'SETTINGS.GENERAL_SETTING' | translate }}
+          </button>
+          <button
+            class="tab ml-lg-4 ml-0"
+            (click)="setting = 'tile'"
+            [ngClass]="{ selected: setting === 'tile' }"
+          >
+            {{ 'SETTINGS.TILE_CONFIGURATION' | translate }}
+          </button>
+        </div>
+        <div class="actions d-lg-block d-none" *ngIf="setting === 'general'">
+          <a routerLink="/home" href="">
+            <app-button mode="transparent">{{ 'COMMON.CANCEL' | translate }}</app-button></a
+          >
+          <a routerLink="/home" href="">
+            <app-button (click)="setGeneralConfiguration()">{{
+              'COMMON.SAVE_CHANGES' | translate
+            }}</app-button>
+          </a>
+        </div>
+        <div class="actions d-lg-block d-none" *ngIf="setting === 'tile'">
+          <app-button (click)="addTile()"
+            ><span class="button-icon">+</span>{{ 'SETTINGS.ADD_TILE' | translate }}</app-button
+          >
+        </div>
+      </div>
+      <div body class="mt-3 pb-3 px-lg-0 px-3">
+        <div class="actions d-lg-none d-flex justify-content-end">
+          <a routerLink="/home" href="" *ngIf="setting === 'general'" class="mr-4">
+            <app-button mode="transparent">
+              {{ 'COMMON.CANCEL' | translate }}
+            </app-button>
+          </a>
+          <app-button (click)="setGeneralConfiguration()" *ngIf="setting === 'general'">
+            {{ 'COMMON.SAVE_CHANGES' | translate }}
+          </app-button>
+
+          <app-button (click)="addTile()" *ngIf="setting === 'tile'">
+            <span class="button-icon">+</span>{{ 'SETTINGS.ADD_TILE' | translate }}</app-button
+          >
+        </div>
+        <div
+          class="settings-content general mt-lg-5 ml-lg-4 mt-3 ml-0"
+          [ngClass]="{ show: setting === 'general' }"
+          *ngIf="generalConfiguration && generalConfiguration.length"
+        >
+          <div class="input-wrap">
+            <app-input
+              [configs]="{
+                mode: 'color',
+                defaultValue: primaryColor
+              }"
+              (blurInput)="setConfigValues({ key: 'primaryColor', value: $event })"
+              >{{ 'SETTINGS.PRIMARY_COLOR' | translate }}</app-input
+            >
+          </div>
+          <div class="input-wrap">
+            <app-input
+              [configs]="{
+                mode: 'color',
+                defaultValue: bgColor
+              }"
+              (blurInput)="setConfigValues({ key: 'bgColor', value: $event })"
+              >{{ 'SETTINGS.BACKGROUND_COLOR' | translate }}</app-input
+            >
+          </div>
+          <div class="input-wrap">
+            <app-checkbox
+              [configs]="{ defaultChecked: light }"
+              (changeCheckbox)="setConfigValues({ key: 'light', value: $event })"
+              >{{ 'SETTINGS.LIGHT_WELCOME_TEXT' | translate }}</app-checkbox
+            >
+          </div>
+          <div class="input-wrap">
+            <app-input
+              [configs]="{
+                autoClear: true,
+                defaultValue: bgImage,
+                type: 'file'
+              }"
+              (changeInput)="setConfigValues({ key: 'bgImage', value: $event })"
+              >{{ 'SETTINGS.BACKGROUND_IMAGE' | translate }}</app-input
+            >
+          </div>
+          <div class="image-wrapper mt-3" *ngIf="bgImage">
+            <img [src]="bgImage | iconUrl" />
+          </div>
+        </div>
+      </div>
+      <div
+        body
+        class="settings-content tile"
+        [ngClass]="{ show: setting === 'tile' }"
+        *ngIf="tileConfiguration"
+      >
+        <div class="tile-list p-lg-4">
+          <div
+            *ngFor="let tileConfig of tileConfiguration; index as i"
+            class="tile-row d-flex flex-lg-row flex-column mb-4 mx-0 pt-lg-0 pt-3"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              <div class="positioning d-flex flex-column">
+                <img
+                  src="assets/images/arrow-down.svg"
+                  (click)="changePosition(tileConfig.id, tileConfiguration[i - 1].id)"
+                />
+                <img src="assets/images/delete.svg" (click)="deleteTile(tileConfig.id)" />
+                <img
+                  src="assets/images/arrow-down.svg"
+                  (click)="changePosition(tileConfig.id, tileConfiguration[i + 1].id)"
+                />
+              </div>
+              <app-tile-card [mode]="'preview'" [config]="tileConfig"></app-tile-card>
+            </div>
+
+            <form class="tile-form ml-lg-5 ml-0 d-flex flex-lg-row flex-column">
+              <div class="custom-input-group ml-lg-5 ml-0">
+                <div class="input-wrap">
+                  <app-input
+                    [configs]="{
+                      defaultValue: tileConfig.tileName
+                    }"
+                    (blurInput)="setTileConfigValues({ tileName: $event }, tileConfig.id)"
+                    >{{ 'SETTINGS.TILE_NAME' | translate }}</app-input
+                  >
+                </div>
+                <div class="input-wrap">
+                  <app-input
+                    [configs]="{
+                      defaultValue: tileConfig.desc
+                    }"
+                    (blurInput)="setTileConfigValues({ desc: $event }, tileConfig.id)"
+                    >{{ 'SETTINGS.DESCRIPTION' | translate }}</app-input
+                  >
+                </div>
+              </div>
+              <div class="custom-input-group ml-lg-5 ml-0 mt-2 mt-lg-0">
+                <div class="input-wrap">
+                  <app-input
+                    [configs]="{
+                      defaultValue: tileConfig.appUrl
+                    }"
+                    (blurInput)="setTileConfigValues({ appUrl: $event }, tileConfig.id)"
+                    >{{ 'SETTINGS.APP_URL' | translate }}</app-input
+                  >
+                </div>
+                <div class="input-wrap">
+                  <app-input
+                    [configs]="{
+                      mode: 'url',
+                      autoClear: true,
+                      defaultValue: tileConfig.iconUrl
+                    }"
+                    (blurInput)="setTileConfigValues({ iconUrl: $event }, tileConfig.id)"
+                    >{{ 'SETTINGS.ICON_URL' | translate }}</app-input
+                  >
+                </div>
+              </div>
+              <div class="custom-input-group ml-lg-5 ml-0 mt-2 mt-lg-0">
+                <div class="input-wrap">
+                  <app-input
+                    [configs]="{
+                      mode: 'color',
+                      defaultValue: tileConfig.tileColor || '#ffffff'
+                    }"
+                    (blurInput)="setTileConfigValues({ tileColor: $event }, tileConfig.id)"
+                    >{{ 'SETTINGS.TILE_COLOR' | translate }}</app-input
+                  >
+                </div>
+                <div class="input-wrap">
+                  <app-input
+                    [configs]="{
+                      mode: 'color',
+                      defaultValue: tileConfig.tileTextColor
+                    }"
+                    (blurInput)="setTileConfigValues({ tileTextColor: $event }, tileConfig.id)"
+                    >{{ 'SETTINGS.TILE_TEXT_COLOR' | translate }}</app-input
+                  >
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </app-page-card-layout>
+  </div>
+</app-page-layout>

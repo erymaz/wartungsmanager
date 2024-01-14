@@ -1,0 +1,32 @@
+<app-panel>
+  <app-panel-header>
+    <i class="material-icons mr-3">pending_actions</i>
+    <h4>{{ 'VIEWS.ASSET_DETAILS.ASSET_HISTORY' | translate }}</h4>
+  </app-panel-header>
+
+  <app-panel-body class="p-0">
+    <app-table class="w-100" [data]="activities" [scrollable]="true">
+      <app-row *appHeaderRowDef>
+        <app-header-cell appHeaderSort="createdAt">
+          {{ 'VIEWS.ASSET_DETAILS.CREATED_AT' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="activityType">
+          {{ 'VIEWS.ASSET_DETAILS.ACTIVITY_TYPE' | translate }}
+        </app-header-cell>
+        <app-header-cell appHeaderSort="createdBy">
+          {{ 'VIEWS.ASSET_DETAILS.CREATED_BY' | translate }}
+        </app-header-cell>
+      </app-row>
+
+      <app-row appDataRow *appDataRowDef="let activity">
+        <app-cell>{{ activity.createdAt | date: 'dd.MM.yyyy | HH:mm' }}</app-cell>
+        <app-cell>{{ activity.activityType }}</app-cell>
+        <app-cell><a role="button">{{ activity.createdBy | username | async }}</a></app-cell>
+      </app-row>
+
+      <app-row appEmptyRow *appEmptyRowDef>
+        <span>No activities found</span>
+      </app-row>
+    </app-table>
+  </app-panel-body>
+</app-panel>

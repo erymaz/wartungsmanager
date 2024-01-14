@@ -1,0 +1,129 @@
+.settings {
+  padding-top: 45px;
+  .button-icon {
+    font-size: 20px;
+    line-height: 0;
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+  .settings-config {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+  }
+  .tabs {
+    height: 100%;
+    display: flex;
+    margin-left: 60px;
+    .tab {
+      padding: 0 20px;
+      margin-left: 30px;
+      outline: none;
+      height: 100%;
+      background-color: transparent;
+      border: none;
+      padding-top: 4px;
+      border-bottom: 4px solid transparent;
+      transition: 0.3s ease-in-out;
+      &:first-child {
+        margin-left: 0;
+      }
+      &.selected {
+        border-bottom: 4px solid #000;
+      }
+      @media screen and (max-width: 768px) {
+        font-size: 12px;
+        width: 120px;
+      }
+    }
+  }
+  .settings-content {
+    display: none;
+    &.general {
+      // padding-top: 20px;
+      width: 330px;
+      margin-left: 60px;
+      padding: 50px 0;
+      .image-wrapper {
+        max-width: 260px;
+        height: auto;
+        img {
+          width: 100%;
+        }
+      }
+    }
+    &.show {
+      display: block;
+    }
+    .input-wrap {
+      margin-top: 30px;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+.tile-list {
+  padding: 30px 30px;
+  .tile-row {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+    &:first-child {
+      img {
+        &:first-child {
+          visibility: hidden;
+        }
+      }
+    }
+    &:last-child {
+      img {
+        &:last-child {
+          visibility: hidden;
+        }
+      }
+    }
+    .positioning {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      margin-right: 40px;
+      img {
+        cursor: pointer;
+        width: 18px;
+        height: auto;
+        margin-top: 2rem;
+        &:first-child {
+          margin-top: 0;
+          transform: rotate(180deg);
+        }
+      }
+    }
+    .tile-form {
+      display: flex;
+      margin-left: 70px;
+      width: 100%;
+      div {
+        margin: 0;
+      }
+      .custom-input-group {
+        max-width: 320px;
+        width: 100%;
+        margin-left: 70px;
+        &:first-child {
+          margin-left: 0;
+        }
+        .input-wrap {
+          width: 100%;
+          margin-top: 10px;
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+}

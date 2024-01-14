@@ -1,0 +1,48 @@
+<app-panel class="panel-actions">
+  <app-panel-header>
+    <button backButton class="btn btn-transparent btn-icon mr-3">
+      <i class="material-icons">navigate_before</i>
+    </button>
+
+    <h2 [multilang]="name$ | async"></h2>
+
+    <app-panel-header-actions>
+      <ng-container *ngIf="editMode">
+        <button class="btn btn-transparent btn-icon">
+          <i class="material-icons mi-22">content_copy</i>
+        </button>
+
+        <button class="btn btn-transparent btn-icon ml-3" (click)="onDelete()">
+          <i class="material-icons mi-26">delete_outline</i>
+        </button>
+      </ng-container>
+
+      <a backButton role="button" class="font-weight-bold">
+        {{ 'VIEWS.ASSET_DETAILS.CANCEL' | translate }}
+      </a>
+
+      <button class="btn btn-primary" (click)="onSave()">
+        {{(editMode ? 'VIEWS.ASSET_DETAILS.SAVE_CHANGES' : 'VIEWS.ASSET_DETAILS.CREATE_ASSET') | translate }}
+      </button>
+    </app-panel-header-actions>
+  </app-panel-header>
+</app-panel>
+
+<ng-container [formGroup]="form">
+  <div class="row flex-grow-1">
+    <div class="col-12 col-md-4">
+      <app-asset-type-details-form
+        [parentForm]="form"
+        [assetType]="assetType"
+      ></app-asset-type-details-form>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <app-asset-type-properties [assetTypeId]="assetType.id"></app-asset-type-properties>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <app-asset-type-assigned-assets [assetTypeId]="assetType.id"></app-asset-type-assigned-assets>
+    </div>
+  </div>
+</ng-container>

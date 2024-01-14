@@ -1,0 +1,12 @@
+<button
+  [ngClass]="{
+    primary: mode === 'primary',
+    outline: mode === 'outline',
+    transparent: mode === 'transparent'
+  }"
+  [ngStyle]="colorOptions"
+  (mouseenter)="onMouseIn()"
+  (mouseleave)="onMouseOut()"
+>
+  <ng-content></ng-content>
+</button>

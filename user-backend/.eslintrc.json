@@ -1,0 +1,6 @@
+{
+  "extends": "@elunic/eslint-config-ecs",
+  "rules": {
+    "sort-imports": "off"
+  }
+}

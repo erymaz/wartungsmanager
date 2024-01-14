@@ -1,0 +1,55 @@
+@import 'abstracts/variables';
+
+header {
+  display: flex;
+  align-items: center;
+  padding: $header-padding-y $header-padding-x;
+  height: $header-height;
+  background-color: $white;
+  box-shadow: 0px 3px 6px rgba($black, 20%);
+
+  .header-left {
+    padding: 2px 0;
+    margin-left: 1.5rem;
+    line-height: 1;
+
+    .brand-text {
+      font-size: 20px;
+      color: #000;
+    }
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+
+    h1 {
+      position: relative;
+      margin-bottom: 0;
+      color: rgba($black, 87%);
+    }
+
+    .logo {
+      margin-top: 2px;
+    }
+  }
+
+  a {
+    color: #000;
+    text-decoration: none;
+    .small-icon {
+      width: 100%;
+      max-height: 30px;
+    }
+    .image-wrapper {
+      width: 20px;
+      img {
+        margin: 0;
+        filter: invert(1);
+      }
+    }
+    &.dropdown-item {
+      font-size: 12px;
+    }
+  }
+}

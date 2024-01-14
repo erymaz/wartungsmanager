@@ -1,0 +1,83 @@
+<app-table
+  class="asset-table"
+  [data]="assets"
+  [searchCols]="['id']"
+  [searchMultilangCols]="['name', 'assetType.name']"
+  [searchTerm]="searchTerm"
+  [elevated]="true"
+>
+  <app-row *appHeaderRowDef>
+    <app-header-cell appHeaderSort="name" [isMultilang]="true">
+      {{ 'VIEWS.ASSET_POOL.NAME' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="assetType.name" [isMultilang]="true">
+      {{ 'VIEWS.ASSET_POOL.TYPE' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="id">
+      {{ 'VIEWS.ASSET_POOL.ID' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="documents">
+      {{ 'VIEWS.ASSET_POOL.DOCUMENTS' | translate }}
+    </app-header-cell>
+    <app-header-cell appHeaderSort="createdAt">
+      {{ 'VIEWS.ASSET_POOL.CREATED_OR_UPDATED_AT' | translate }}
+    </app-header-cell>
+    <app-header-cell></app-header-cell>
+    <app-header-cell></app-header-cell>
+  </app-row>
+
+  <app-row *appDataRowDef="let asset">
+    <app-cell>
+      <img [src]="asset.imageId ? imageIdToUrl(asset.imageId) : './assets/images/asset-thumbnail.jpg'"
+           class="asset-thumbnail" alt="Asset thumbnail" />
+      <strong [multilang]="asset.name"></strong>
+    </app-cell>
+
+    <app-cell [multilang]="asset.assetType.name"></app-cell>
+
+    <app-cell>{{ asset.id }}</app-cell>
+
+    <app-cell>{{ asset.documents?.length || '-' }}</app-cell>
+
+    <app-cell>{{ asset.createdAt | date: 'dd.MM.yyyy | HH:mm' }}</app-cell>
+
+    <app-cell class="overflow-visible">
+      <app-asset-hierarchy-dropdown
+        [assets]="assetTree"
+        placeholder="{{ 'VIEWS.ASSET_POOL.ALLOCATE_ASSET_TO' | translate }}"
+        (selected)="transform(asset.id, $event)"
+      >
+      </app-asset-hierarchy-dropdown>
+    </app-cell>
+
+    <app-cell class="overflow-visible">
+      <div ngbDropdown placement="bottom-right" class="btn-group">
+        <button ngbDropdownToggle class="btn btn-transparent btn-icon">
+          <i class="material-icons mi-26">more_vert</i>
+        </button>
+        <div ngbDropdownMenu class="text-right">
+          <button ngbDropdownItem routerLink="/assets/{{asset.id}}">
+            {{ 'VIEWS.ASSET_POOL.EDIT' | translate }}
+          </button>
+          <button ngbDropdownItem>
+            {{ 'VIEWS.ASSET_POOL.ADD_POOL_ASSET' | translate }}
+          </button>
+          <button ngbDropdownItem>
+            {{ 'VIEWS.ASSET_POOL.CREATE_NEW_SUB_ASSET' | translate }}
+          </button>
+          <button ngbDropdownItem>
+            {{ 'VIEWS.ASSET_POOL.DUPLICATE' | translate }}
+          </button>
+          <button ngbDropdownItem class="text-danger" (click)="delete(asset.id)">
+            {{ 'VIEWS.ASSET_POOL.DELETE' | translate }}
+          </button>
+        </div>
+      </div>
+    </app-cell>
+  </app-row>
+
+  <app-row appEmptyRow *appEmptyRowDef>
+    <span *ngIf="!loading">No assets found</span>
+    <app-loader *ngIf="loading"></app-loader>
+  </app-row>
+</app-table>

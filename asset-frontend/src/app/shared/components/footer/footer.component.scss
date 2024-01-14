@@ -1,0 +1,15 @@
+@import 'abstracts/variables';
+
+footer {
+  display: flex;
+  padding: $footer-padding-y $footer-padding-x;
+  color: rgba($gray-600, 87%);
+
+  a {
+    color: rgba($gray-600, 87%);
+
+    &:hover {
+      color: rgba($gray-900, 87%);
+    }
+  }
+}

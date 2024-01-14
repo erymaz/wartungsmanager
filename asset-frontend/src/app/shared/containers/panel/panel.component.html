@@ -1,0 +1,7 @@
+<div class="panel">
+  <ng-content select="app-panel-header"></ng-content>
+
+  <div class="panel-body-container" [class.container-scrollable]="scrollable">
+    <ng-content select="app-panel-body"></ng-content>
+  </div>
+</div>

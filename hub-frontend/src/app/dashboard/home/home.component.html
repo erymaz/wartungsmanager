@@ -1,0 +1,19 @@
+<app-page-layout>
+  <div class="home">
+    <div class="content-wrapper">
+      <div
+        class="services"
+        [ngClass]="{
+          'mode-1x1': mode === '1x1',
+          'mode-1x2': mode === '1x2',
+          'mode-2x2': mode === '2x2',
+          'mode-2x3': mode === '2x3',
+          'mode-2x4': mode === '2x4',
+          'mode-2x5': mode === '2x5'
+        }"
+      >
+        <app-tile-card [config]="item" *ngFor="let item of cards"></app-tile-card>
+      </div>
+    </div>
+  </div>
+</app-page-layout>

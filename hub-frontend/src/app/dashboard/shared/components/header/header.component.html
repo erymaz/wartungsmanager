@@ -1,0 +1,57 @@
+<div class="header">
+  <div class="header-content">
+    <div class="general">
+      <div class="wrapper-dropdown" ngbDropdown>
+        <img src="assets/images/burger.svg" id="menu" ngbDropdownToggle />
+        <div aria-labelledby="menu" ngbDropdownMenu class="border-0 shadow-sm mt-2">
+          <a
+            [href]="item.appUrl"
+            ngbDropdownItem
+            *ngFor="let item of tileConfigurations"
+            class="d-flex align-items-center dropdown-item font-weight-bold p-2"
+          >
+            <div class="image-wrapper mr-3">
+              <img [src]="item.iconUrl | iconUrl" class="small-icon" />
+            </div>
+            {{ item.tileName || 'Empty name' }}
+          </a>
+        </div>
+      </div>
+      <span class="mr-1 text-white font-weight-light">DIGITAL</span>
+      <span class="text-white"><b>SUITE</b></span>
+    </div>
+    <div class="options">
+      <div class="wrapper-dropdown mb-1" ngbDropdown>
+        <button class="settings-dropdown" id="settings" ngbDropdownToggle>
+          <img src="assets/images/settings.svg" />
+        </button>
+        <div aria-labelledby="settings" ngbDropdownMenu>
+          <a
+            routerLink="/settings"
+            href=""
+            ngbDropdownItem
+            class="dropdown-item-overlay"
+            >{{ 'OPTIONS.SETTINGS.HUB_SETTINGS' | translate }}</a
+          >
+        </div>
+      </div>
+      <div class="wrapper-dropdown mt-1" ngbDropdown>
+        <button class="user-dropdown" id="user" ngbDropdownToggle>
+          <div
+            class="userpic-stub"
+            [ngStyle]="{ 'background-image': 'url(' + userImageUrl + ')' }"
+          ></div>
+        </button>
+        <div aria-labelledby="user" ngbDropdownMenu>
+          <div ngbDropdownItem class="dropdown-item-overlay">
+            <b>{{ username }}</b>
+          </div>
+          <a [href]="logoutUrl" ngbDropdownItem class="dropdown-item-overlay">
+            {{ 'OPTIONS.PROFIL.LOGOUT' | translate }}
+          </a>
+        </div>
+      </div>
+      <img class="ml-5 company-logo" src="assets/images/schuler-logo.svg" alt="Schuler Logo" />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<app-panel>
+  <app-panel-header>
+    <h4>{{ 'VIEWS.ASSET_TYPE_DETAILS.ASSIGNED_ASSETS' | translate }}</h4>
+  </app-panel-header>
+
+  <app-panel-body class="p-0">
+    <app-table class="w-100" [data]="assets" [scrollable]="true">
+        <app-row *appHeaderRowDef>
+          <app-header-cell appHeaderSort="name" [isMultilang]="true">
+            {{ 'VIEWS.ASSET_DETAILS.ASSET_NAME' | translate }}
+          </app-header-cell>
+        </app-row>
+  
+  
+        <app-row appDataRow *appDataRowDef="let property">
+          <app-cell [multilang]="property.name"></app-cell>
+        </app-row>
+  
+        <app-row appEmptyRow *appEmptyRowDef>
+          <span>No properties found</span>
+        </app-row>
+      </app-table>
+  </app-panel-body>
+</app-panel>
